@@ -1,0 +1,26 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-ebs-sc
+  namespace: jenkins
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  zone: us-east-1a
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-pvc-claim
+  labels:
+    app: jenkins-controller
+  namespace: jenkins
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: aws-ebs-sc
+  resources:
+    requests:
+      storage: 10Gi
